@@ -53,6 +53,15 @@ article{max-width:760px;margin:0 auto}
 .content a{color:var(--a2);text-decoration:underline;word-break:break-all}
 .content a:hover{color:var(--a1)}
 </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M2VW56HQ77"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-M2VW56HQ77');
+</script>
 </head>
 <body>
 <header><div class="wrap"><nav>
@@ -114,8 +123,8 @@ function renderPost(id) {
 
 async function route() {
   const [page, id] = location.hash.slice(1).split('/');
-  if (page === 'post') renderPost(id);
-  else renderList();
+  if (page === 'post') { renderPost(id); const p = posts.find(x => x.id === id); document.title = (p ? p.title + ' | ' : '') + 'My Blog'; }
+  else { renderList(); document.title = 'My Blog'; }
   window.scrollTo(0, 0);
 }
 
@@ -123,7 +132,10 @@ async function route() {
   if (API_URL.startsWith('PASTE')) { app.innerHTML = '<div class="msg">index.html ထဲက API_URL ကို ထည့်ပါ</div>'; return; }
   app.innerHTML = '<div class="msg">Loading...</div>';
   try { await loadPosts(); } catch (e) { app.innerHTML = `<div class="msg">Error: ${esc(e.message)}</div>`; return; }
-  window.addEventListener('hashchange', route);
+  window.addEventListener('hashchange', () => {
+    route();
+    if (window.gtag) gtag('event', 'page_view', { page_location: location.href, page_title: document.title });
+  });
   route();
 })();
 </script>
