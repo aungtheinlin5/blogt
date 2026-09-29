@@ -3,34 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>မြန်မာ အောကား</title>
+<title>မြန်မာ အောကား</title></title>
 <style>
-:root{--bg:#f7f7f5;--card:#fff;--text:#222;--muted:#777;--accent:#2f6fed;--border:#e3e3e0}
-@media (prefers-color-scheme:dark){:root{--bg:#161618;--card:#212124;--text:#eee;--muted:#999;--accent:#6b9bff;--border:#333}}
+:root{--bg:#0a0b10;--card:#12141d;--card2:#181b27;--text:#e8eaf2;--muted:#8b90a7;--a1:#7c5cff;--a2:#00e5ff;--border:#242838}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans Myanmar","Padauk",system-ui,sans-serif;line-height:1.8}
-header{background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--text);font-family:"Noto Sans Myanmar","Padauk",system-ui,sans-serif;line-height:1.85;
+  background:radial-gradient(900px 500px at 85% -10%,rgba(124,92,255,.18),transparent 60%),radial-gradient(700px 400px at -5% 10%,rgba(0,229,255,.10),transparent 60%),var(--bg);
+  background-attachment:fixed;min-height:100vh}
+::selection{background:var(--a1);color:#fff}
 .wrap{max-width:760px;margin:0 auto;padding:0 16px}
-nav{display:flex;justify-content:space-between;align-items:center;height:60px}
-nav a{color:var(--text);text-decoration:none;font-weight:700;font-size:20px;cursor:pointer}
-button,.btn{background:var(--accent);color:#fff;border:0;padding:8px 16px;border-radius:8px;cursor:pointer;font:inherit;font-size:14px}
-button.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
-button.danger{background:#d64545}
-main{padding:24px 0 60px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;cursor:pointer;transition:transform .15s}
-.card:hover{transform:translateY(-2px)}
-.card h2{margin:0 0 6px;font-size:20px}
-.meta{color:var(--muted);font-size:13px}
-.excerpt{margin:8px 0 0;color:var(--muted)}
-article h1{margin:0 0 6px}
-.content{white-space:pre-wrap;margin-top:20px;font-size:17px}
-input,textarea{width:100%;padding:10px;margin:6px 0 14px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font:inherit}
-textarea{min-height:260px}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.msg{text-align:center;color:var(--muted);padding:40px 0}
-#search{margin-bottom:20px}
-.cover{width:100%;max-height:360px;object-fit:cover;border-radius:10px;margin:14px 0;display:block}
-.card .cover{max-height:180px;margin:0 0 12px}
+header{background:rgba(10,11,16,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5}
+nav{display:flex;justify-content:space-between;align-items:center;height:64px}
+nav a{font-weight:800;font-size:22px;letter-spacing:.5px;cursor:pointer;text-decoration:none;
+  background:linear-gradient(90deg,var(--a2),var(--a1));-webkit-background-clip:text;background-clip:text;color:transparent}
+main{padding:28px 0 70px}
+button{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border:0;padding:9px 18px;border-radius:10px;cursor:pointer;font:inherit;font-size:14px;font-weight:600;transition:box-shadow .2s,transform .2s}
+button:hover{box-shadow:0 0 18px rgba(0,229,255,.45);transform:translateY(-1px)}
+button.ghost{background:transparent;color:var(--a2);border:1px solid var(--a2)}
+button.ghost:hover{background:rgba(0,229,255,.1)}
+#search,input{width:100%;padding:13px 16px;margin-bottom:22px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font:inherit;outline:0;transition:border .2s,box-shadow .2s}
+#search:focus{border-color:var(--a1);box-shadow:0 0 0 3px rgba(124,92,255,.25)}
+#search::placeholder{color:var(--muted)}
+.card{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px;cursor:pointer;position:relative;overflow:hidden;transition:transform .2s,border-color .2s,box-shadow .2s}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--a2),var(--a1));opacity:.7}
+.card:hover{transform:translateY(-4px);border-color:var(--a1);box-shadow:0 10px 34px rgba(124,92,255,.25)}
+.card h2{margin:0 0 6px;font-size:21px;color:#fff;transition:color .2s}
+.card:hover h2{color:var(--a2)}
+.meta{color:var(--a2);font-size:13px;opacity:.85}
+.meta::before{content:"● ";color:var(--a1);font-size:10px}
+.excerpt{margin:10px 0 0;color:var(--muted)}
+.cover{width:100%;max-height:380px;object-fit:cover;border-radius:12px;margin:16px 0;display:block;border:1px solid var(--border)}
+.card .cover{max-height:190px;margin:0 0 14px;transition:transform .3s}
+.card:hover .cover{transform:scale(1.02)}
+article h1{margin:0 0 8px;font-size:32px;line-height:1.4;background:linear-gradient(90deg,#fff,var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.content{white-space:pre-wrap;margin-top:22px;font-size:17px;color:#cfd3e4}
+.msg{text-align:center;color:var(--muted);padding:60px 0}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px}
 </style>
 </head>
 <body>
