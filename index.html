@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>မြန်မာ အောကား</title></title>
+<title>MM All Car</title>
 <style>
 :root{--bg:#0a0b10;--card:#12141d;--card2:#181b27;--text:#e8eaf2;--muted:#8b90a7;--a1:#7c5cff;--a2:#00e5ff;--border:#242838}
 *{box-sizing:border-box}
@@ -40,11 +40,23 @@ article h1{margin:0 0 8px;font-size:32px;line-height:1.4;background:linear-gradi
 .content{white-space:pre-wrap;margin-top:22px;font-size:17px;color:#cfd3e4}
 .msg{text-align:center;color:var(--muted);padding:60px 0}
 ::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px}
+.wrap{max-width:980px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:22px}
+.grid .msg{grid-column:1/-1}
+.card{padding:0;margin:0;display:flex;flex-direction:column}
+.card::before{display:none}
+.card .thumb{aspect-ratio:16/10;overflow:hidden;background:linear-gradient(135deg,rgba(124,92,255,.35),rgba(0,229,255,.25));display:flex;align-items:center;justify-content:center;font-size:42px}
+.card .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.card:hover .thumb img{transform:scale(1.06)}
+.card h2{padding:14px 16px 16px;margin:0;font-size:17px;line-height:1.55}
+article{max-width:760px;margin:0 auto}
+.content a{color:var(--a2);text-decoration:underline;word-break:break-all}
+.content a:hover{color:var(--a1)}
 </style>
 </head>
 <body>
 <header><div class="wrap"><nav>
-  <a onclick="go('')">မြန်မာ အောကား</a>
+  <a onclick="go('')">MM All Car</a>
 </nav></div></header>
 <main class="wrap" id="app"></main>
 
@@ -70,16 +82,23 @@ async function loadPosts() {
 function renderList(filter = '') {
   const q = filter.toLowerCase();
   const list = posts.filter(p => (p.title + p.content).toLowerCase().includes(q));
-  app.innerHTML = `<input id="search" placeholder="🔍 ရှာမယ်..." value="${esc(filter)}">` +
+  app.innerHTML = `<input id="search" placeholder="🔍 ရှာမယ်..." value="${esc(filter)}"><div class="grid">` +
     (list.length ? list.map(p => `
       <div class="card" onclick="go('post/${p.id}')">
-        ${p.image ? `<img class="cover" src="${esc(p.image)}" loading="lazy" alt="">` : ''}
+        <div class="thumb">${p.image ? `<img src="${esc(p.image)}" loading="lazy" alt="">` : '📝'}</div>
         <h2>${esc(p.title)}</h2>
-        <div class="meta">${esc(p.author)} · ${fmt(p.date)}</div>
-        <p class="excerpt">${esc(p.content.slice(0, 140))}${p.content.length > 140 ? '...' : ''}</p>
-      </div>`).join('') : '<div class="msg">Post မရှိသေးပါ</div>');
+      </div>`).join('') : '<div class="msg">Post မရှိသေးပါ</div>') + '</div>';
   const s = document.getElementById('search');
   s.oninput = e => { renderList(e.target.value); const n = document.getElementById('search'); n.focus(); n.setSelectionRange(n.value.length, n.value.length); };
+}
+
+// Link တွေကို နှိပ်လို့ရအောင် ပြောင်းပေးတယ်: https://... သို့မဟုတ် [စာသား](https://...)
+function linkify(t) {
+  return esc(t).replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<]+)/g, (m, label, u1, u2) => {
+    let url = u1 || u2, tail = '';
+    if (u2) { const x = url.match(/[.,;:!?)\]]+$/); if (x) { tail = x[0]; url = url.slice(0, -tail.length); } }
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer nofollow">${label || url}</a>${tail}`;
+  });
 }
 
 function renderPost(id) {
@@ -90,7 +109,7 @@ function renderPost(id) {
     <h1 style="margin-top:16px">${esc(p.title)}</h1>
     <div class="meta">${esc(p.author)} · ${fmt(p.date)}</div>
     ${p.image ? `<img class="cover" src="${esc(p.image)}" alt="">` : ''}
-    <div class="content">${esc(p.content)}</div></article>`;
+    <div class="content">${linkify(p.content)}</div></article>`;
 }
 
 async function route() {
@@ -108,5 +127,6 @@ async function route() {
   route();
 })();
 </script>
+<script src="https://pl31571491.profitableratecpmnetwork.com/de/93/47/de9347073ab496f74355af3fa45de451.js"></script>
 </body>
 </html>
