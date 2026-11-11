@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a0f08">
+<title>တရားတော်များ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1a0f08;--bg2:#2a1710;--card:#3a2016;--saffron:#f28c28;--gold:#e8b84a;--cream:#fff4dc;--muted:#cdb08a;--radius:16px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"Noto Sans Myanmar","Padauk",system-ui,sans-serif;
+  background:radial-gradient(circle at 50% -10%,rgba(232,184,74,.25),transparent 55%),linear-gradient(180deg,var(--bg2),var(--bg) 60%);
+  background-attachment:fixed;color:var(--cream);min-height:100vh;line-height:1.7;overflow-x:hidden;padding-bottom:20px;transition:padding-bottom .3s}
+body.has-player{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+[hidden]{display:none!important}
+.ic{width:24px;height:24px;fill:currentColor;display:block;pointer-events:none}
+
+.hero{position:relative;text-align:center;padding:20px 16px 8px}
+.wheel{width:60px;height:60px;margin:0 auto 4px;animation:spin 40s linear infinite;filter:drop-shadow(0 0 10px rgba(232,184,74,.6))}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero h1{font-size:1.45rem;color:var(--gold);text-shadow:0 2px 12px rgba(242,140,40,.4);line-height:1.5}
+.hero p{color:var(--muted);font-size:.9rem}
+.container{max-width:760px;margin:0 auto;padding:0 12px}
+
+/* Slider */
+.slider{position:relative;margin:10px 0 16px;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(232,184,74,.35);box-shadow:0 6px 24px rgba(0,0,0,.45)}
+.track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.track::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;scroll-snap-align:center;aspect-ratio:16/9;background:linear-gradient(135deg,var(--card),#2d1810)}
+.slide img{width:100%;height:100%;object-fit:cover;display:block}
+.dots{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,244,220,.5);transition:all .25s}
+.dot.on{background:var(--gold);width:22px;border-radius:6px}
+
+.sec{color:var(--gold);font-size:1.05rem;text-align:center;margin:6px 0 12px}
+
+/* ဆရာတော် Grid */
+.monks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.monk{cursor:pointer;text-align:center;background:linear-gradient(135deg,var(--card),#2d1810);border:1px solid rgba(232,184,74,.3);border-radius:14px;padding:6px 6px 9px;transition:transform .12s,border-color .15s;min-width:0}
+.monk:active{transform:scale(.96)}
+.monk:hover{border-color:var(--gold)}
+.photo{aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:radial-gradient(circle,#5a3320,#2a1710);display:grid;place-items:center;font-size:2.2rem;color:var(--gold);border:1px solid rgba(232,184,74,.25)}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.mname{font-size:.78rem;font-weight:700;color:var(--gold);line-height:1.45;margin-top:7px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
+.mtitle{font-size:.68rem;color:var(--muted);line-height:1.4;margin-top:1px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
+.mcount{display:inline-block;margin-top:4px;font-size:.66rem;padding:0 8px;border-radius:999px;background:rgba(232,184,74,.15);color:var(--gold)}
+
+/* ဆရာတော်တစ်ပါး၏ တရားများ */
+.back{display:inline-flex;align-items:center;gap:6px;margin:10px 0;padding:9px 16px;min-height:42px;border-radius:999px;border:1px solid rgba(232,184,74,.5);background:rgba(0,0,0,.3);color:var(--gold);font:inherit;font-size:.9rem;cursor:pointer}
+.mhead{display:flex;align-items:center;gap:14px;padding:12px;margin-bottom:12px;background:linear-gradient(135deg,var(--card),#2d1810);border:1px solid rgba(232,184,74,.3);border-radius:var(--radius)}
+.mhead .photo{width:74px;flex:0 0 74px}
+.mhead .mn{font-size:1.1rem;font-weight:700;color:var(--gold);line-height:1.5}
+.mhead .mt{font-size:.85rem;color:var(--muted)}
+
+.search{width:100%;padding:12px 18px;border-radius:999px;border:1px solid rgba(232,184,74,.4);background:rgba(0,0,0,.35);color:var(--cream);font:inherit;font-size:16px;outline:none}
+.search:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,184,74,.2)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;padding:7px 16px;border-radius:999px;cursor:pointer;border:1px solid rgba(232,184,74,.4);background:transparent;color:var(--muted);font:inherit;font-size:.9rem}
+.chip.active{background:linear-gradient(135deg,var(--saffron),var(--gold));color:#3a1a05;border-color:transparent;font-weight:600}
+
+.list{display:flex;flex-direction:column;gap:9px}
+.item{display:flex;align-items:center;gap:12px;padding:11px 12px;min-height:62px;background:linear-gradient(135deg,var(--card),#2d1810);border:1px solid rgba(232,184,74,.18);border-radius:var(--radius);cursor:pointer;transition:border-color .15s,transform .1s}
+.item:active{transform:scale(.98)}
+.item.playing{border-color:var(--saffron);box-shadow:0 0 16px rgba(242,140,40,.35)}
+.num{width:40px;height:40px;flex:0 0 40px;border-radius:50%;display:grid;place-items:center;font-size:1rem;background:radial-gradient(circle,var(--gold),var(--saffron));color:#3a1a05;font-weight:700}
+.info{min-width:0;flex:1}
+.t{font-weight:600;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.5;word-break:break-word}
+.tag{font-size:.72rem;padding:2px 9px;border-radius:999px;background:rgba(232,184,74,.15);color:var(--gold);white-space:nowrap;max-width:90px;overflow:hidden;text-overflow:ellipsis}
+.empty,.loading{text-align:center;color:var(--muted);padding:36px 10px}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:22px 10px 8px}
+
+/* ===== Mini Player (အောက်ချုံ့ထားချိန်) ===== */
+.mini{position:fixed;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:50;display:none;align-items:center;gap:10px;
+  padding:8px 8px 10px 10px;border-radius:18px;background:linear-gradient(135deg,#5a2a1a,#2a1710);border:1px solid var(--gold);
+  box-shadow:0 6px 24px rgba(0,0,0,.6);cursor:pointer;overflow:hidden;max-width:744px;margin:0 auto}
+.mini.show{display:flex}
+.mini .th{width:46px;height:46px;flex:0 0 46px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#2a1710;border:2px solid var(--gold);color:var(--gold);font-size:1.4rem}
+.mini .th img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.mini .mi{min-width:0;flex:1}
+.mini .a{font-weight:700;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5}
+.mini .b{font-size:.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
+.mbtn{flex:0 0 44px;width:44px;height:44px;border-radius:50%;border:none;background:none;color:var(--cream);display:grid;place-items:center;cursor:pointer}
+.mbtn.pp{background:linear-gradient(135deg,var(--saffron),var(--gold));color:#3a1a05}
+.mini .prog{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--gold)}
+
+/* ===== Full Player ===== */
+.fp{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;
+  background:linear-gradient(180deg,#8a3416 0%,#5a1f10 30%,#2a1710 60%);
+  transform:translateY(105%);visibility:hidden;transition:transform .35s ease,visibility 0s .35s}
+.fp.show{transform:none;visibility:visible;transition:transform .35s ease,visibility 0s}
+.fp-top{display:flex;justify-content:space-between;align-items:center;padding:calc(12px + env(safe-area-inset-top)) 14px 0;flex:0 0 auto}
+.round{width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(255,244,220,.6);background:rgba(0,0,0,.2);color:var(--cream);display:grid;place-items:center;cursor:pointer}
+.round:active{background:rgba(232,184,74,.3)}
+.art{position:relative;z-index:2;flex:0 0 auto;display:grid;place-items:center;margin-top:-6px}
+.art-box{width:min(52vw,210px);aspect-ratio:1;border-radius:28px;background:linear-gradient(135deg,#b24f1d,#6b2412);border:2px solid rgba(232,184,74,.85);display:grid;place-items:center;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.art-circle{width:82%;aspect-ratio:1;border-radius:50%;overflow:hidden;border:4px solid #1a0f08;background:#2a1710;display:grid;place-items:center;font-size:3.6rem;color:var(--gold)}
+.art-circle img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.sheet{position:relative;flex:1;min-height:0;overflow-y:auto;margin-top:-62px;padding:84px 20px calc(18px + env(safe-area-inset-bottom));background:#251813;border-radius:32px 32px 0 0;box-shadow:0 -6px 24px rgba(0,0,0,.35)}
+.ttl{font-size:1.28rem;font-weight:700;text-align:center;line-height:1.6;color:#fff;word-break:break-word}
+.spk{text-align:center;color:var(--muted);font-size:1rem;margin-top:2px;line-height:1.5}
+.tools{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 10px}
+.tool{width:48px;height:48px;border-radius:50%;background:none;border:none;color:var(--cream);display:grid;place-items:center;position:relative;cursor:pointer;font:inherit}
+.tool:active{background:rgba(232,184,74,.2)}
+.tool.on{color:var(--gold)}
+.tool .lbl{font-size:1rem;font-weight:600}
+.tool .badge{position:absolute;bottom:1px;right:-2px;font-size:.62rem;color:var(--gold);font-weight:700}
+.seekwrap{margin-top:10px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;outline:none;cursor:pointer;--p:0%}
+input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:5px;background:linear-gradient(to right,var(--gold) var(--p),rgba(255,255,255,.25) var(--p))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;margin-top:-6.5px;border-radius:50%;background:var(--gold);border:none;box-shadow:0 0 0 4px rgba(232,184,74,.25)}
+input[type=range]::-moz-range-track{height:5px;border-radius:5px;background:rgba(255,255,255,.25)}
+input[type=range]::-moz-range-progress{height:5px;border-radius:5px;background:var(--gold)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:var(--gold)}
+.times{display:flex;justify-content:space-between;color:var(--muted);font-size:.85rem;margin-top:0}
+.main-ctrls{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding:0 4px}
+.mc{width:56px;height:56px;border-radius:50%;border:none;background:none;color:var(--cream);display:grid;place-items:center;cursor:pointer}
+.mc:active{background:rgba(232,184,74,.2)}
+.mc .ic{width:30px;height:30px}
+.mc.play{width:74px;height:74px;background:linear-gradient(135deg,var(--saffron),var(--gold));color:#3a1a05;box-shadow:0 6px 20px rgba(242,140,40,.4)}
+.mc.play .ic{width:38px;height:38px}
+.hint{position:absolute;left:50%;top:calc(66px + env(safe-area-inset-top));transform:translateX(-50%);z-index:5;background:rgba(0,0,0,.75);color:var(--cream);padding:6px 16px;border-radius:999px;font-size:.85rem;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+.hint.show{opacity:1}
+@media (max-height:640px){.art-box{width:min(40vw,150px)}.sheet{padding-top:70px}.tools{margin-top:12px}.mc.play{width:64px;height:64px}}
+
+/* တရားစာရင်း (Queue) */
+.qp{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.6);display:none;align-items:flex-end}
+.qp.show{display:flex}
+.qcard{width:100%;max-height:72vh;overflow-y:auto;background:#251813;border-radius:24px 24px 0 0;padding:0 14px calc(16px + env(safe-area-inset-bottom));border-top:2px solid var(--gold)}
+.qh{position:sticky;top:0;background:#251813;display:flex;justify-content:space-between;align-items:center;padding:14px 4px 10px;color:var(--gold);font-weight:700}
+.qi{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:12px;cursor:pointer}
+.qi.on{background:rgba(242,140,40,.18)}
+.qi .qn{width:30px;flex:0 0 30px;text-align:center;color:var(--muted);font-size:.9rem}
+.qi.on .qn{color:var(--saffron)}
+.qi .qt{flex:1;min-width:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.5;word-break:break-word}
+
+/* Account */
+.acct{position:absolute;top:14px;right:14px;width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(232,184,74,.6);background:rgba(0,0,0,.3);color:var(--gold);font-size:1.1rem;font-weight:700;cursor:pointer;font-family:inherit}
+.acct.in{background:linear-gradient(135deg,var(--saffron),var(--gold));color:#3a1a05}
+.toast{position:fixed;top:calc(14px + env(safe-area-inset-top));left:50%;transform:translateX(-50%) translateY(-120px);z-index:120;max-width:92vw;text-align:center;background:var(--saffron);color:#3a1a05;padding:10px 20px;border-radius:999px;font-weight:700;font-size:.9rem;transition:transform .3s}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.modal{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:16px}
+.modal.show{display:flex}
+.acbox{width:min(100%,400px);max-height:92vh;overflow-y:auto;background:linear-gradient(135deg,#3a2016,#2a1710);border:1px solid var(--gold);border-radius:20px;padding:16px 18px 20px;box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.ach{display:flex;justify-content:space-between;align-items:center;color:var(--gold);font-weight:700;font-size:1.1rem;margin-bottom:8px}
+.acbox label{display:block;font-size:.85rem;color:var(--muted);margin:10px 0 4px}
+.acbox input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(232,184,74,.4);background:rgba(0,0,0,.35);color:var(--cream);font:inherit;font-size:16px;outline:none}
+.acbox input:focus{border-color:var(--gold)}
+.abtn{width:100%;margin-top:16px;padding:12px;min-height:46px;border:none;border-radius:999px;background:linear-gradient(135deg,var(--saffron),var(--gold));color:#3a1a05;font:inherit;font-weight:700;cursor:pointer}
+.abtn:disabled{opacity:.5}
+.alinks{display:flex;justify-content:space-between;gap:10px;margin-top:14px;font-size:.88rem;flex-wrap:wrap}
+.alinks button{background:none;border:none;color:var(--gold);font:inherit;text-decoration:underline;cursor:pointer;padding:4px 0}
+.amsg{margin-top:10px;font-size:.88rem;color:#ffb089;min-height:1.2em;line-height:1.6}
+.amsg.ok{color:#9be29b}
+.acem{text-align:center;padding:14px 0;color:var(--cream);word-break:break-all}
+/* Meeting */
+.meetcard{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 16px;padding:12px 14px;border-radius:var(--radius);border:1px solid rgba(232,184,74,.4);background:linear-gradient(135deg,#4a1d12,#2a1710);color:var(--cream);font:inherit;text-align:left;cursor:pointer}
+.meetcard:active{transform:scale(.98)}
+.meetcard .mi{flex:0 0 40px;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:1.3rem;background:radial-gradient(circle,var(--gold),var(--saffron))}
+.meetcard .lt{flex:1;min-width:0}
+.meetcard .l1{font-weight:700;color:var(--gold);line-height:1.5}
+.meetcard .l2{font-size:.82rem;color:var(--muted);line-height:1.5}
+.meetcard .lgo{color:var(--gold);font-size:1.2rem}
+.acbox input[type=checkbox]{width:auto;margin-right:8px;accent-color:var(--saffron);vertical-align:middle}
+.mtopt{display:flex;gap:16px;flex-wrap:wrap;margin:12px 0 4px}
+.mtopt label{margin:0;color:var(--cream);font-size:.9rem}
+.ordiv{text-align:center;color:var(--muted);font-size:.85rem;margin:14px 0 0}
+.meet{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;background:#120a05}
+.mtop{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 10px 4px;color:var(--cream)}
+.mcode{flex:1;min-width:0;font-weight:700;color:var(--gold);line-height:1.45;letter-spacing:1px}
+.mcode small{display:block;font-weight:400;letter-spacing:0;color:var(--muted);font-size:.8rem}
+.mtb{width:42px;height:42px;border-radius:50%;border:1px solid rgba(232,184,74,.5);background:rgba(0,0,0,.3);color:var(--cream);display:grid;place-items:center;cursor:pointer}
+.mmsg{text-align:center;min-height:0}
+.mgrid{flex:1;min-height:0;display:grid;gap:6px;padding:6px}
+.tile{position:relative;min-height:0;min-width:0;border-radius:14px;overflow:hidden;background:#2a1710;border:1px solid rgba(232,184,74,.25)}
+.tile video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+.tile.local video{transform:scaleX(-1)}
+.tile.local.rear video{transform:none}
+.tile .av{position:absolute;inset:0;display:none;place-items:center;font-size:2.8rem;font-weight:700;color:var(--gold);background:radial-gradient(circle,#5a3320,#1a0f08)}
+.tile.nocam .av{display:grid}
+.tile .nm{position:absolute;left:8px;bottom:6px;max-width:75%;padding:1px 10px;border-radius:999px;background:rgba(0,0,0,.6);color:#fff;font-size:.8rem;line-height:1.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .mk{position:absolute;right:8px;bottom:6px;display:none;width:26px;height:26px;border-radius:50%;place-items:center;background:rgba(200,40,40,.9);font-size:.8rem}
+.tile.nomic .mk{display:grid}
+.tile .st{position:absolute;inset:0;display:none;place-items:center;text-align:center;padding:10px;background:rgba(0,0,0,.55);color:var(--cream);font-size:.85rem;line-height:1.6}
+.tile.wait .st{display:grid}
+.mbar{display:flex;justify-content:center;gap:14px;padding:10px 10px calc(14px + env(safe-area-inset-bottom))}
+.mbtn2{width:56px;height:56px;border-radius:50%;border:none;background:#3a2016;color:var(--cream);display:grid;place-items:center;cursor:pointer}
+.mbtn2 .ic{width:26px;height:26px}
+.mbtn2.off{background:#f3f3f3;color:#222}
+.mbtn2.end{background:#d32f2f;color:#fff;width:68px;border-radius:28px}
+.mbtn2:disabled{opacity:.35}
+.tapbtn{padding:12px 22px;min-height:46px;border:none;border-radius:999px;background:linear-gradient(135deg,var(--saffron),var(--gold));color:#3a1a05;font:inherit;font-weight:700;cursor:pointer;margin:4px 0}
+/* Bell / Share */
+.bell{position:absolute;top:14px;right:64px;width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(232,184,74,.6);background:rgba(0,0,0,.3);color:var(--gold);display:grid;place-items:center;cursor:pointer}
+.bell .bdg{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:#d32f2f;color:#fff;font-size:.72rem;font-weight:700;line-height:19px;text-align:center;display:none}
+.bell.lit{background:linear-gradient(135deg,var(--saffron),var(--gold));color:#3a1a05;box-shadow:0 0 16px rgba(242,140,40,.95);animation:ring 1.8s ease-in-out infinite;transform-origin:50% 20%}
+.bell.lit .bdg{display:block}
+@keyframes ring{0%,55%,100%{transform:rotate(0)}10%{transform:rotate(14deg)}20%{transform:rotate(-12deg)}30%{transform:rotate(9deg)}40%{transform:rotate(-6deg)}50%{transform:rotate(3deg)}}
+.shb{flex:0 0 40px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(232,184,74,.4);background:rgba(0,0,0,.25);color:var(--gold);display:grid;place-items:center;cursor:pointer}
+.shb .ic{width:20px;height:20px}
+.shtitle{padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.3);color:var(--cream);font-weight:600;line-height:1.55;margin:6px 0;word-break:break-word}
+.ib-tools{text-align:right;padding:0 4px 8px}
+.ib-tools button{background:none;border:none;color:var(--gold);font:inherit;font-size:.85rem;text-decoration:underline;cursor:pointer;padding:4px}
+.ibi{display:flex;align-items:center;gap:10px;padding:12px 10px;margin-bottom:8px;border-radius:14px;border:1px solid rgba(232,184,74,.18);background:rgba(0,0,0,.2)}
+.ibi.new{border-color:var(--saffron);background:rgba(242,140,40,.12);box-shadow:0 0 12px rgba(242,140,40,.25)}
+.ibm{flex:1;min-width:0}
+.ibf{font-size:.8rem;color:var(--muted);word-break:break-all;line-height:1.5}
+.ibt{font-weight:600;line-height:1.5;word-break:break-word}
+.ibd{font-size:.72rem;color:var(--muted)}
+.nw{color:var(--saffron);font-weight:700;font-size:.7rem}
+.ibp{flex:0 0 46px;width:46px;height:46px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--saffron),var(--gold));color:#3a1a05;display:grid;place-items:center;cursor:pointer}
+/* Timer */
+.sp-status{text-align:center;color:var(--gold);padding:6px 0 12px;font-weight:600}
+.sp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.sp-grid button{padding:14px 8px;min-height:50px;border-radius:14px;border:1px solid rgba(232,184,74,.45);background:rgba(0,0,0,.25);color:var(--cream);font:inherit;cursor:pointer}
+.sp-grid button:active{background:rgba(232,184,74,.25)}
+.sp-custom{display:flex;gap:8px;margin-top:12px}
+.sp-custom input{flex:1;min-width:0;padding:12px 14px;border-radius:12px;border:1px solid rgba(232,184,74,.4);background:rgba(0,0,0,.35);color:var(--cream);font:inherit;font-size:16px;outline:none}
+.sp-custom button{padding:0 20px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--saffron),var(--gold));color:#3a1a05;font:inherit;font-weight:700;cursor:pointer}
+.sp-off{width:100%;margin-top:12px;padding:12px;border-radius:14px;border:1px solid #8e2a1e;background:transparent;color:#ffb089;font:inherit;cursor:pointer}
+
+@media (min-width:700px){.hero h1{font-size:1.9rem}.wheel{width:80px;height:80px}.container{padding:0 16px}.mname{font-size:.95rem}.mtitle{font-size:.8rem}.monks{gap:14px}.mhead .photo{width:96px;flex-basis:96px}.sheet{max-width:560px;margin-left:auto;margin-right:auto;width:100%}}
+</style>
+</head>
+<body>
+
+<!-- Icons -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></symbol>
+  <symbol id="i-prev" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></symbol>
+  <symbol id="i-rew" viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></symbol>
+  <symbol id="i-fwd" viewBox="0 0 24 24"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></symbol>
+  <symbol id="i-repeat1" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4zm-4-2V9h-1l-2 1v1h1.5v4H13z"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></symbol>
+  <symbol id="i-queue" viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></symbol>
+  <symbol id="i-vol" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.796 8.796 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></symbol>
+  <symbol id="i-micoff" viewBox="0 0 24 24"><path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 4.27 3z"/></symbol>
+  <symbol id="i-cam" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></symbol>
+  <symbol id="i-camoff" viewBox="0 0 24 24"><path d="M21 6.5l-4 4V7c0-.55-.45-1-1-1H9.82L21 17.18V6.5zM3.27 2L2 3.27 4.73 6H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.21 0 .39-.08.54-.18L19.73 21 21 19.73 3.27 2z"/></symbol>
+  <symbol id="i-flip" viewBox="0 0 24 24"><path d="M20 4h-3.17L15 2H9L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 11.5V13H9v2.5L5.5 12 9 8.5V11h6V8.5l3.5 3.5-3.5 3.5z"/></symbol>
+  <symbol id="i-end" viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.73-1.68-1.36-2.66-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></symbol>
+</svg>
+
+<div class="toast" id="toast"></div>
+
+<header class="hero">
+  <button class="bell" id="bell" hidden aria-label="Notification"><svg class="ic"><use href="#i-bell"/></svg><span class="bdg" id="bdg">0</span></button>
+  <button class="acct" id="acctBtn" aria-label="အကောင့်">👤</button>
+  <svg class="wheel" viewBox="0 0 100 100" fill="none" stroke="#e8b84a" stroke-width="2.5">
+    <circle cx="50" cy="50" r="46"/><circle cx="50" cy="50" r="38" stroke-width="1.5"/>
+    <circle cx="50" cy="50" r="9" fill="#e8b84a"/>
+    <line x1="50" y1="12" x2="50" y2="41"/><line x1="50" y1="59" x2="50" y2="88"/>
+    <line x1="12" y1="50" x2="41" y2="50"/><line x1="59" y1="50" x2="88" y2="50"/>
+    <line x1="23" y1="23" x2="43" y2="43"/><line x1="57" y1="57" x2="77" y2="77"/>
+    <line x1="77" y1="23" x2="57" y2="43"/><line x1="43" y1="57" x2="23" y2="77"/>
+    <circle cx="50" cy="8" r="3" fill="#e8b84a"/><circle cx="50" cy="92" r="3" fill="#e8b84a"/>
+    <circle cx="8" cy="50" r="3" fill="#e8b84a"/><circle cx="92" cy="50" r="3" fill="#e8b84a"/>
+  </svg>
+  <h1>☸ တရားတော်များ ☸</h1>
+  <p>နာယူ၍ ကုသိုလ်ရကြပါစေ</p>
+</header>
+
+<main class="container">
+
+  <!-- Home -->
+  <div id="homeView">
+    <section class="slider" id="slider" hidden>
+      <div class="track" id="track"></div>
+      <div class="dots" id="dots"></div>
+    </section>
+    <button class="meetcard" id="meetCard" type="button">
+      <span class="mi">👥</span>
+      <span class="lt"><div class="l1">Meeting (အစည်းအဝေး)</div><div class="l2">Video Call ဖွင့်မည် / Code နဲ့ ဝင်မည်</div></span>
+      <span class="lgo">›</span>
+    </button>
+    <div id="monksWrap">
+      <h2 class="sec">🙏 ဆရာတော်ဘုရားများ</h2>
+      <div class="monks" id="monks"><div class="loading" style="grid-column:1/-1">ခဏစောင့်ပါ...</div></div>
+    </div>
+  </div>
+
+  <!-- ဆရာတော်တစ်ပါးရဲ့ တရားများ -->
+  <div id="monkView" hidden>
+    <button class="back" id="backBtn">← နောက်သို့</button>
+    <div class="mhead" id="mhead"></div>
+    <input class="search" id="search" type="search" placeholder="🔍 တရားခေါင်းစဉ် ရှာရန်...">
+    <div class="chips" id="chips"></div>
+    <div class="list" id="list"></div>
+  </div>
+
+  <footer>သာဓု သာဓု သာဓု 🙏</footer>
+</main>
+
+<!-- Mini Player -->
+<div class="mini" id="mini">
+  <div class="th" id="miniTh">☸</div>
+  <div class="mi"><div class="a" id="miniA"></div><div class="b" id="miniB">&nbsp;</div></div>
+  <button class="mbtn pp" id="miniPP" aria-label="Play/Pause"><svg class="ic"><use href="#i-play"/></svg></button>
+  <button class="mbtn" id="miniClose" aria-label="ပိတ်"><svg class="ic"><use href="#i-close"/></svg></button>
+  <div class="prog" id="miniProg"></div>
+</div>
+
+<!-- Full Player -->
+<div class="fp" id="fp">
+  <div class="hint" id="hint"></div>
+  <div class="fp-top">
+    <button class="round" id="fpDown" aria-label="ချုံ့မည်"><svg class="ic"><use href="#i-down"/></svg></button>
+    <button class="round" id="fpShare" aria-label="Share"><svg class="ic"><use href="#i-share"/></svg></button>
+    <button class="round" id="fpClose" aria-label="ရပ်၍ ပိတ်မည်"><svg class="ic"><use href="#i-close"/></svg></button>
+  </div>
+  <div class="art"><div class="art-box"><div class="art-circle" id="artCircle">☸</div></div></div>
+  <div class="sheet">
+    <div class="ttl" id="ttl"></div>
+    <div class="spk" id="spk">&nbsp;</div>
+
+    <div class="tools">
+      <button class="tool" id="tVol" aria-label="အသံ"><svg class="ic"><use href="#i-vol"/></svg></button>
+      <button class="tool on" id="tRep" aria-label="ထပ်ခါထပ်ခါ"><svg class="ic"><use href="#i-repeat"/></svg></button>
+      <button class="tool" id="tShuf" aria-label="ရောထွေးဖွင့်"><svg class="ic"><use href="#i-shuffle"/></svg></button>
+      <button class="tool" id="tSpd" aria-label="အမြန်နှုန်း"><span class="lbl" id="spdLbl">1.0x</span></button>
+      <button class="tool" id="tQ" aria-label="တရားစာရင်း"><svg class="ic"><use href="#i-queue"/></svg></button>
+      <button class="tool" id="tSleep" aria-label="အိပ်ချိန်သတ်မှတ်"><svg class="ic"><use href="#i-moon"/></svg><span class="badge" id="sleepBadge"></span></button>
+    </div>
+
+    <div class="seekwrap">
+      <input type="range" id="seek" min="0" max="100" value="0" step="0.1">
+      <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
+    </div>
+
+    <div class="main-ctrls">
+      <button class="mc" id="prev" aria-label="ရှေ့"><svg class="ic"><use href="#i-prev"/></svg></button>
+      <button class="mc" id="back15" aria-label="၁၅ စက္ကန့်နောက်ဆုတ်"><svg class="ic"><use href="#i-rew"/></svg></button>
+      <button class="mc play" id="play" aria-label="Play/Pause"><svg class="ic"><use href="#i-play"/></svg></button>
+      <button class="mc" id="fwd" aria-label="၁၅ စက္ကန့်ရှေ့တိုး"><svg class="ic"><use href="#i-fwd"/></svg></button>
+      <button class="mc" id="next" aria-label="နောက်"><svg class="ic"><use href="#i-next"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- Queue -->
+<div class="qp" id="qp">
+  <div class="qcard">
+    <div class="qh"><span>🎧 တရားစာရင်း</span><button class="round" id="qClose" style="width:38px;height:38px"><svg class="ic"><use href="#i-close"/></svg></button></div>
+    <div id="qList"></div>
+  </div>
+</div>
+
+<!-- Timer -->
+<div class="qp" id="sp">
+  <div class="qcard">
+    <div class="qh"><span>🌙 အိပ်ချိန် Timer</span><button class="round" id="spClose" style="width:38px;height:38px" aria-label="ပိတ်"><svg class="ic"><use href="#i-close"/></svg></button></div>
+    <div class="sp-status" id="spStatus"></div>
+    <div class="sp-grid" id="spGrid"></div>
+    <div class="sp-custom">
+      <input type="number" id="spMin" min="1" max="1440" inputmode="numeric" placeholder="မိနစ် ကိုယ်တိုင်ထည့်">
+      <button id="spSet">သတ်မှတ်</button>
+    </div>
+    <button class="sp-off" id="spOff">Timer ပိတ်မည်</button>
+  </div>
+</div>
+
+<!-- Meeting -->
+<div class="modal" id="mt"><div class="acbox" id="mtBox"></div></div>
+<div class="meet" id="meet" hidden>
+  <div class="mtop">
+    <div class="mcode"><div id="mCode"></div><small id="mCnt"></small></div>
+    <button class="mtb" id="mShare" type="button" aria-label="Share"><svg class="ic"><use href="#i-share"/></svg></button>
+    <button class="mtb" id="mCopy" type="button" aria-label="Link ကူး"><svg class="ic"><use href="#i-copy"/></svg></button>
+  </div>
+  <div class="mmsg" id="mMsg"></div>
+  <div class="mgrid" id="mGrid"></div>
+  <div class="mbar">
+    <button class="mbtn2" id="mMic" type="button" aria-label="Mic"><svg class="ic"><use href="#i-mic"/></svg></button>
+    <button class="mbtn2" id="mCam" type="button" aria-label="Camera"><svg class="ic"><use href="#i-cam"/></svg></button>
+    <button class="mbtn2" id="mFlip" type="button" aria-label="Camera ပြောင်း"><svg class="ic"><use href="#i-flip"/></svg></button>
+    <button class="mbtn2 end" id="mEnd" type="button" aria-label="ထွက်မည်"><svg class="ic"><use href="#i-end"/></svg></button>
+  </div>
+</div>
+
+<!-- Inbox (🔔) -->
+<div class="qp" id="ib">
+  <div class="qcard">
+    <div class="qh"><span>🔔 ရောက်ရှိထားသော တရားများ</span><button class="round" id="ibClose" style="width:38px;height:38px" aria-label="ပိတ်"><svg class="ic"><use href="#i-close"/></svg></button></div>
+    <div class="ib-tools"><button id="ibAll">အားလုံး ဖတ်ပြီးမှတ်မည်</button></div>
+    <div id="ibList"></div>
+  </div>
+</div>
+
+<!-- Share -->
+<div class="modal" id="sh"><div class="acbox" id="shBox"></div></div>
+
+<!-- Login / Register -->
+<div class="modal" id="ac"><div class="acbox" id="acBox"></div></div>
+
+<audio id="audio" preload="none"></audio>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://rxyxaibfsymunsnomapj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_wPC6Nu102HghI1CPqzixPQ_LhjCv8Nw";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmtTime = t => { if (!isFinite(t)) return "0:00"; return Math.floor(t/60) + ":" + String(Math.floor(t%60)).padStart(2,"0"); };
+const setIcon = (btn, id) => btn.querySelector("use").setAttribute("href", "#i-" + id);
+const audio = $("audio");
+
+let sermons = [], monks = [], view = [], queue = [], qi = -1, nowPlaying = null;
+let cat = "all", curMonk = null, navigated = false;
+let expanded = false, repMode = "auto", shuffleOn = false, speedIdx = 1, sleepEnd = null, sleepEOT = false, sleepTick = null;
+const SPEEDS = [0.75, 1, 1.25, 1.5, 2];
+const OTHER = "other";
+
+/* ---------- Data ---------- */
+async function load() {
+  const [s, m] = await Promise.all([
+    db.from("sermons").select("*").order("created_at", { ascending: false }),
+    db.from("monks").select("*").order("sort_order").order("id")
+  ]);
+  if (s.error) { $("monks").innerHTML = `<div class="empty" style="grid-column:1/-1">ဒေတာ ဖတ်မရပါ: ${esc(s.error.message)}</div>`; return; }
+  sermons = s.data || [];
+  updateBell();
+  monks = m.error ? [] : (m.data || []);
+  renderMonks();
+  route();
+}
+
+/* ---------- Home: ဆရာတော် Grid ---------- */
+function photoHtml(url) {
+  return url ? `<img src="${esc(url)}" alt="" loading="lazy" onerror="this.parentNode.textContent='☸'">` : "☸";
+}
+function renderMonks() {
+  const hasOther = sermons.some(x => !x.monk_id || !monks.some(m => m.id === x.monk_id));
+  const cards = monks.map(m => {
+    const n = sermons.filter(x => x.monk_id === m.id).length;
+    return `<div class="monk" data-id="${m.id}">
+      <div class="photo">${photoHtml(m.photo_url)}</div>
+      <div class="mname">${esc(m.name)}</div>
+      ${m.title ? `<div class="mtitle">${esc(m.title)}</div>` : ""}
+      <span class="mcount">${n} ပုဒ်</span></div>`;
+  });
+  if (hasOther) {
+    const n = sermons.filter(x => !x.monk_id || !monks.some(m => m.id === x.monk_id)).length;
+    cards.push(`<div class="monk" data-id="${OTHER}"><div class="photo">☸</div>
+      <div class="mname">${monks.length ? "အခြားတရားများ" : "တရားတော်များ"}</div><span class="mcount">${n} ပုဒ်</span></div>`);
+  }
+  if (!cards.length) { $("monks").innerHTML = `<div class="empty" style="grid-column:1/-1">ဆရာတော် မရှိသေးပါ</div>`; return; }
+  $("monks").innerHTML = cards.join("");
+  document.querySelectorAll(".monk").forEach(el => el.onclick = () => {
+    navigated = true; location.hash = "m=" + el.dataset.id;
+  });
+}
+
+/* ---------- Routing ---------- */
+function route() {
+  const h = location.hash.replace("#", "");
+  const id = h.startsWith("m=") ? h.slice(2) : null;
+  if (!id || (id !== OTHER && !monks.some(m => m.id === +id))) {
+    curMonk = null;
+    $("homeView").hidden = false; $("monkView").hidden = true;
+    return;
+  }
+  curMonk = id === OTHER ? OTHER : +id;
+  cat = "all"; $("search").value = "";
+  const m = monks.find(x => x.id === curMonk);
+  $("mhead").innerHTML = m
+    ? `<div class="photo">${photoHtml(m.photo_url)}</div><div><div class="mn">${esc(m.name)}</div>${m.title ? `<div class="mt">${esc(m.title)}</div>` : ""}</div>`
+    : `<div class="photo">☸</div><div><div class="mn">${monks.length ? "အခြားတရားများ" : "တရားတော်များ"}</div></div>`;
+  $("homeView").hidden = true; $("monkView").hidden = false;
+  window.scrollTo(0, 0);
+  renderChips(); applyFilter();
+}
+window.addEventListener("hashchange", route);
+$("backBtn").onclick = () => { navigated ? history.back() : (location.hash = ""); };
+
+/* ---------- တရားစာရင်း ---------- */
+function monkSermons() {
+  if (curMonk === null) return [];
+  if (curMonk === OTHER) return sermons.filter(x => !x.monk_id || !monks.some(m => m.id === x.monk_id));
+  return sermons.filter(x => x.monk_id === curMonk);
+}
+function renderChips() {
+  const cats = [...new Set(monkSermons().map(s => s.category).filter(Boolean))];
+  $("chips").style.display = cats.length ? "flex" : "none";
+  $("chips").innerHTML = ["all", ...cats].map(c =>
+    `<button class="chip ${c === cat ? "active" : ""}" data-c="${esc(c)}">${c === "all" ? "အားလုံး" : esc(c)}</button>`).join("");
+  document.querySelectorAll(".chip").forEach(b => b.onclick = () => { cat = b.dataset.c; renderChips(); applyFilter(); });
+}
+function applyFilter() {
+  const q = $("search").value.trim().toLowerCase();
+  view = monkSermons().filter(s => (cat === "all" || s.category === cat) && (!q || s.title.toLowerCase().includes(q)));
+  renderList();
+}
+function renderList() {
+  if (!view.length) { $("list").innerHTML = `<div class="empty">တရားတော် မတွေ့ပါ</div>`; return; }
+  $("list").innerHTML = view.map((s, i) => {
+    const on = nowPlaying && nowPlaying.id === s.id;
+    return `<div class="item ${on ? "playing" : ""}" data-i="${i}">
+      <div class="num">${on ? (audio.paused ? "❚❚" : "♪") : i + 1}</div>
+      <div class="info"><div class="t">${esc(s.title)}</div></div>
+      ${s.category ? `<span class="tag">${esc(s.category)}</span>` : ""}
+      <button class="shb" data-sh="${i}" aria-label="Share"><svg class="ic"><use href="#i-share"/></svg></button>
+    </div>`;
+  }).join("");
+  document.querySelectorAll(".item").forEach(el => el.onclick = () => clickItem(+el.dataset.i));
+  document.querySelectorAll(".shb").forEach(b => b.onclick = e => { e.stopPropagation(); openShare(view[+b.dataset.sh]); });
+}
+
+/* ---------- Player ---------- */
+function sync() {
+  $("fp").classList.toggle("show", expanded);
+  const miniOn = !!nowPlaying && !expanded;
+  $("mini").classList.toggle("show", miniOn);
+  document.body.classList.toggle("has-player", miniOn);
+  document.body.style.overflow = expanded ? "hidden" : "";
+}
+function expand() {
+  if (!nowPlaying) return;
+  if (!expanded) { expanded = true; history.pushState({ p: 1 }, ""); }
+  sync();
+}
+function collapseUI() { expanded = false; sync(); }
+function collapse() { (history.state && history.state.p) ? history.back() : collapseUI(); }
+window.addEventListener("popstate", () => { if (expanded) collapseUI(); });
+
+function hint(txt) {
+  const h = $("hint"); h.textContent = txt; h.classList.add("show");
+  clearTimeout(hint.t); hint.t = setTimeout(() => h.classList.remove("show"), 1600);
+}
+function clickItem(i) {
+  const s = view[i];
+  if (nowPlaying && nowPlaying.id === s.id) { expand(); if (audio.paused) audio.play(); return; }
+  queue = view.slice(); qi = i; start(true);
+}
+function start(fromClick) {
+  const s = queue[qi];
+  if (!s) return;
+  nowPlaying = s;
+  audio.src = s.url;
+  audio.playbackRate = SPEEDS[speedIdx];
+  audio.play().catch(() => {});
+  const monk = monks.find(m => m.id === s.monk_id);
+  const who = monk ? monk.name : (s.speaker || "");
+  $("ttl").textContent = s.title; $("spk").textContent = who || " ";
+  $("miniA").textContent = s.title; $("miniB").textContent = who || " ";
+  const art = monk ? photoHtml(monk.photo_url) : "☸";
+  $("artCircle").innerHTML = art; $("miniTh").innerHTML = art;
+  $("seek").value = 0; $("seek").style.setProperty("--p", "0%");
+  $("cur").textContent = "0:00"; $("dur").textContent = "0:00"; $("miniProg").style.width = "0";
+  document.title = "▶ " + s.title;
+  if (fromClick) expand(); else sync();
+  setMediaSession(s, who, monk);
+  renderList(); renderQueue();
+}
+function step(d) {
+  if (!queue.length) return;
+  let n;
+  if (d > 0 && shuffleOn && queue.length > 1) { do { n = Math.floor(Math.random() * queue.length); } while (n === qi); }
+  else n = qi + d;
+  if (n >= 0 && n < queue.length) { qi = n; start(false); }
+}
+function toggle() { audio.paused ? audio.play() : audio.pause(); }
+function stopAll() {
+  clearSleep();
+  audio.pause(); audio.removeAttribute("src"); audio.load();
+  nowPlaying = null; queue = []; qi = -1;
+  if ("mediaSession" in navigator) { try { navigator.mediaSession.metadata = null; navigator.mediaSession.playbackState = "none"; } catch (e) {} }
+  if (expanded) { expanded = false; if (history.state && history.state.p) history.back(); }
+  sync(); $("qp").classList.remove("show");
+  document.title = "တရားတော်များ"; renderList();
+}
+
+audio.addEventListener("play", () => { setIcon($("play"), "pause"); setIcon($("miniPP"), "pause"); setPlayState("playing"); renderList(); });
+audio.addEventListener("pause", () => { setIcon($("play"), "play"); setIcon($("miniPP"), "play"); if (nowPlaying) setPlayState("paused"); renderList(); });
+audio.addEventListener("loadedmetadata", () => { $("dur").textContent = fmtTime(audio.duration); });
+audio.addEventListener("timeupdate", () => {
+  checkSleep(); updatePos();
+  $("cur").textContent = fmtTime(audio.currentTime);
+  if (audio.duration) {
+    const p = (audio.currentTime / audio.duration) * 100;
+    $("seek").value = p; $("seek").style.setProperty("--p", p + "%");
+    $("miniProg").style.width = p + "%";
+  }
+});
+audio.addEventListener("ended", () => {
+  if (sleepEOT) { clearSleep(); hint("Timer အရ ရပ်လိုက်ပါပြီ"); return; }
+  if (repMode === "one") { audio.currentTime = 0; audio.play(); }
+  else if (repMode === "auto") step(1);
+});
+audio.addEventListener("error", () => { if (nowPlaying) $("spk").textContent = "⚠ ဖွင့်မရပါ (Link ကို စစ်ပါ)"; });
+
+$("seek").oninput = e => {
+  e.target.style.setProperty("--p", e.target.value + "%");
+  if (audio.duration) audio.currentTime = (e.target.value / 100) * audio.duration;
+};
+$("play").onclick = toggle;
+$("miniPP").onclick = e => { e.stopPropagation(); toggle(); };
+$("mini").onclick = () => expand();
+$("miniClose").onclick = e => { e.stopPropagation(); stopAll(); };
+$("fpClose").onclick = stopAll;
+$("fpDown").onclick = collapse;
+$("prev").onclick = () => step(-1);
+$("next").onclick = () => step(1);
+$("back15").onclick = () => audio.currentTime = Math.max(0, audio.currentTime - 15);
+$("fwd").onclick = () => audio.currentTime = Math.min(audio.duration || 1e9, audio.currentTime + 15);
+
+$("tVol").onclick = () => {
+  audio.muted = !audio.muted;
+  setIcon($("tVol"), audio.muted ? "mute" : "vol"); $("tVol").classList.toggle("on", audio.muted);
+  hint(audio.muted ? "အသံပိတ်ထားသည်" : "အသံဖွင့်ထားသည်");
+};
+$("tRep").onclick = () => {
+  repMode = repMode === "auto" ? "one" : repMode === "one" ? "off" : "auto";
+  setIcon($("tRep"), repMode === "one" ? "repeat1" : "repeat");
+  $("tRep").classList.toggle("on", repMode !== "off");
+  hint(repMode === "auto" ? "ဆက်တိုက်ဖွင့်မည်" : repMode === "one" ? "ဒီတရားကို ထပ်ခါထပ်ခါဖွင့်မည်" : "တစ်ပုဒ်ပြီးရင် ရပ်မည်");
+};
+$("tShuf").onclick = () => {
+  shuffleOn = !shuffleOn; $("tShuf").classList.toggle("on", shuffleOn);
+  hint(shuffleOn ? "ရောထွေးဖွင့်မည်" : "အစဉ်လိုက်ဖွင့်မည်");
+};
+$("tSpd").onclick = () => {
+  speedIdx = (speedIdx + 1) % SPEEDS.length;
+  const s = SPEEDS[speedIdx];
+  audio.playbackRate = s;
+  $("spdLbl").textContent = (Number.isInteger(s * 10) ? s.toFixed(1) : s.toFixed(2)) + "x";
+  $("tSpd").classList.toggle("on", s !== 1);
+};
+$("tSleep").onclick = () => openSleep();
+
+/* Queue */
+function renderQueue() {
+  $("qList").innerHTML = queue.map((s, i) => `
+    <div class="qi ${i === qi ? "on" : ""}" data-i="${i}">
+      <div class="qn">${i === qi ? "♪" : i + 1}</div><div class="qt">${esc(s.title)}</div>
+    </div>`).join("");
+  document.querySelectorAll(".qi").forEach(el => el.onclick = () => {
+    qi = +el.dataset.i; start(false); $("qp").classList.remove("show");
+  });
+}
+$("tQ").onclick = () => { renderQueue(); $("qp").classList.add("show"); };
+$("qClose").onclick = () => $("qp").classList.remove("show");
+$("qp").onclick = e => { if (e.target.id === "qp") $("qp").classList.remove("show"); };
+
+$("search").oninput = applyFilter;
+document.addEventListener("keydown", e => {
+  if (["INPUT", "SELECT", "TEXTAREA"].includes(e.target.tagName)) return;
+  if (e.code === "Space" && nowPlaying) { e.preventDefault(); toggle(); }
+});
+
+/* ---------- Notification (Media Session) ---------- */
+function absUrl(u) { try { return new URL(u, location.href).href; } catch (e) { return ""; } }
+function setMediaSession(s, who, monk) {
+  if (!("mediaSession" in navigator)) return;
+  const art = monk && monk.photo_url ? [96, 192, 256, 512].map(z => ({ src: absUrl(monk.photo_url), sizes: z + "x" + z })) : [];
+  try {
+    navigator.mediaSession.metadata = new MediaMetadata({ title: s.title, artist: who || "တရားတော်", album: s.category || "တရားတော်", artwork: art });
+  } catch (e) {}
+}
+function setPlayState(st) { if ("mediaSession" in navigator) { try { navigator.mediaSession.playbackState = st; } catch (e) {} } }
+let lastPos = 0;
+function updatePos() {
+  if (!("mediaSession" in navigator) || !audio.duration || !isFinite(audio.duration)) return;
+  const now = Date.now(); if (now - lastPos < 1000) return; lastPos = now;
+  try { navigator.mediaSession.setPositionState({ duration: audio.duration, playbackRate: audio.playbackRate, position: Math.min(audio.currentTime, audio.duration) }); } catch (e) {}
+}
+if ("mediaSession" in navigator) {
+  const set = (a, f) => { try { navigator.mediaSession.setActionHandler(a, f); } catch (e) {} };
+  set("play", () => audio.play());
+  set("pause", () => audio.pause());
+  set("previoustrack", () => step(-1));
+  set("nexttrack", () => step(1));
+  set("seekbackward", d => { audio.currentTime = Math.max(0, audio.currentTime - ((d && d.seekOffset) || 15)); });
+  set("seekforward", d => { audio.currentTime = Math.min(audio.duration || 1e9, audio.currentTime + ((d && d.seekOffset) || 15)); });
+  set("seekto", d => { audio.currentTime = d.seekTime; });
+  set("stop", () => stopAll());
+}
+
+/* ---------- Sleep Timer ---------- */
+const SLEEP_OPTS = [[15, "15 မိနစ်"], [30, "30 မိနစ်"], [45, "45 မိနစ်"], [60, "1 နာရီ"], [90, "1 နာရီခွဲ"], [120, "2 နာရီ"], [180, "3 နာရီ"], ["eot", "ဒီတရားပြီးရင်"]];
+function fmtLeft(ms) {
+  const t = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), s = t % 60;
+  const p = n => String(n).padStart(2, "0");
+  return h ? `${h}:${p(m)}:${p(s)}` : `${m}:${p(s)}`;
+}
+function updateSleepUI() {
+  let badge = "";
+  if (sleepEOT) badge = "1ပုဒ်";
+  else if (sleepEnd) {
+    const mins = Math.ceil((sleepEnd - Date.now()) / 60000);
+    badge = mins < 60 ? mins + "m" : (mins / 60).toFixed(1).replace(/\.0$/, "") + "h";
+  }
+  $("sleepBadge").textContent = badge;
+  $("tSleep").classList.toggle("on", !!(sleepEnd || sleepEOT));
+  $("spStatus").textContent = sleepEnd ? "⏳ ကျန်ချိန် " + fmtLeft(sleepEnd - Date.now())
+    : sleepEOT ? "ဒီတရားပြီးရင် ရပ်မည်" : "Timer မသတ်မှတ်ရသေးပါ";
+}
+function clearSleep() {
+  sleepEnd = null; sleepEOT = false;
+  clearInterval(sleepTick); sleepTick = null;
+  updateSleepUI();
+}
+function endSleep() {
+  clearSleep();
+  let v = 1;
+  const f = setInterval(() => {
+    v -= 0.1;
+    if (v <= 0) { clearInterval(f); audio.pause(); audio.volume = 1; } else audio.volume = Math.max(0, v);
+  }, 250);
+  setTimeout(() => { clearInterval(f); audio.pause(); audio.volume = 1; }, 5000);
+  hint("Timer ပြည့်ပြီ — ရပ်လိုက်ပါပြီ 🙏");
+}
+function checkSleep() { if (sleepEnd && Date.now() >= sleepEnd) endSleep(); }
+function setSleep(v) {
+  clearSleep();
+  if (v === "eot") { sleepEOT = true; hint("ဒီတရားပြီးရင် ရပ်မည်"); }
+  else {
+    sleepEnd = Date.now() + v * 60000;
+    sleepTick = setInterval(() => { checkSleep(); updateSleepUI(); }, 1000);
+    hint(v >= 60 ? `${v / 60} နာရီအကြာမှာ အလိုအလျောက် ပိတ်မည်` : `${v} မိနစ်အကြာမှာ အလိုအလျောက် ပိတ်မည်`);
+  }
+  updateSleepUI();
+}
+function openSleep() {
+  $("spGrid").innerHTML = SLEEP_OPTS.map(([v, l]) => `<button data-v="${v}">${l}</button>`).join("");
+  document.querySelectorAll("#spGrid button").forEach(b => b.onclick = () => {
+    setSleep(b.dataset.v === "eot" ? "eot" : +b.dataset.v); $("sp").classList.remove("show");
+  });
+  updateSleepUI(); $("sp").classList.add("show");
+}
+$("spClose").onclick = () => $("sp").classList.remove("show");
+$("sp").onclick = e => { if (e.target.id === "sp") $("sp").classList.remove("show"); };
+$("spSet").onclick = () => {
+  const v = parseInt($("spMin").value, 10);
+  if (!v || v < 1 || v > 1440) return toast("မိနစ် 1 ကနေ 1440 ကြား ထည့်ပါ");
+  setSleep(v); $("spMin").value = ""; $("sp").classList.remove("show");
+};
+$("spOff").onclick = () => { clearSleep(); hint("Timer ပိတ်လိုက်ပါပြီ"); $("sp").classList.remove("show"); };
+setInterval(() => { if ($("sp").classList.contains("show")) updateSleepUI(); }, 1000);
+
+/* ---------- Email Login / Register (Supabase Auth) ---------- */
+let user = null, authMode = "login";
+function toast(t) {
+  const e = $("toast"); e.textContent = t; e.classList.add("show");
+  clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove("show"), 2800);
+}
+const homeUrl = () => location.href.split("#")[0].split("?")[0];
+function authMsg(e) {
+  const m = ((e && e.message) || "").toLowerCase();
+  if (m.includes("invalid login")) return "Email သို့မဟုတ် Password မှားနေပါတယ်";
+  if (m.includes("already registered") || m.includes("already been registered")) return "ဒီ Email နဲ့ အကောင့်ရှိပြီးသားပါ";
+  if (m.includes("not confirmed")) return "Email ကို အတည်ပြုရသေးပါ၊ Inbox/Spam ထဲက Link ကိုနှိပ်ပါ";
+  if (m.includes("rate limit") || m.includes("too many") || m.includes("security purposes")) return "ခဏအကြာမှ ပြန်စမ်းပါ (Email ပို့တာ ကန့်သတ်ချက် ပြည့်နေပါတယ်)";
+  if (m.includes("valid email") || m.includes("invalid email")) return "Email ပုံစံ မမှန်ပါ";
+  if (m.includes("signups not allowed") || m.includes("provider is disabled")) return "Supabase မှာ Email Login ကို မဖွင့်ရသေးပါ";
+  if (m.includes("password")) return "Password အနည်းဆုံး 6 လုံး ရှိရမယ်";
+  return (e && e.message) || "Error ဖြစ်သွားပါတယ်";
+}
+function updateAcct() {
+  $("acctBtn").textContent = user ? ((user.email || "?")[0] || "?").toUpperCase() : "👤";
+  $("acctBtn").classList.toggle("in", !!user);
+}
+function openAuth(m) { authMode = m || (user ? "account" : "login"); renderAuth(); $("ac").classList.add("show"); }
+function closeAuth() { $("ac").classList.remove("show"); }
+function renderAuth() {
+  const head = t => `<div class="ach"><span>${t}</span><button class="round" id="acX" style="width:38px;height:38px" type="button" aria-label="ပိတ်"><svg class="ic"><use href="#i-close"/></svg></button></div>`;
+  let h = "";
+  if (authMode === "account" && user) {
+    h = head("👤 ကျွန်ုပ်၏ အကောင့်") + `<div class="acem">${esc(user.email)}</div><button class="abtn" id="acOut" type="button">ထွက်မည် (Logout)</button>`;
+  } else if (authMode === "register") {
+    h = head("🙏 အကောင့်အသစ် ဖောက်ရန်") + `<form id="acForm">
+      <label>Email</label><input type="email" id="aEmail" autocomplete="email" required placeholder="example@gmail.com">
+      <label>Password (အနည်းဆုံး 6 လုံး)</label><input type="password" id="aPw" autocomplete="new-password" required>
+      <label>Password ထပ်ရိုက်ပါ</label><input type="password" id="aPw2" autocomplete="new-password" required>
+      <div class="amsg" id="amsg"></div><button class="abtn" id="aBtn" type="submit">အကောင့်ဖောက်မည်</button></form>
+      <div class="alinks"><button data-go="login" type="button">အကောင့်ရှိပြီးသားလား? ဝင်မည်</button></div>`;
+  } else if (authMode === "forgot") {
+    h = head("🔑 Password မေ့နေလား?") + `<form id="acForm">
+      <label>မှတ်ပုံတင်ထားတဲ့ Email</label><input type="email" id="aEmail" autocomplete="email" required placeholder="example@gmail.com">
+      <div class="amsg" id="amsg"></div><button class="abtn" id="aBtn" type="submit">Reset Link ပို့မည်</button></form>
+      <div class="alinks"><button data-go="login" type="button">← ပြန်ဝင်မည်</button></div>`;
+  } else if (authMode === "reset") {
+    h = head("🔑 Password အသစ်ပြောင်းရန်") + `<form id="acForm">
+      <label>Password အသစ် (အနည်းဆုံး 6 လုံး)</label><input type="password" id="aPw" autocomplete="new-password" required>
+      <div class="amsg" id="amsg"></div><button class="abtn" id="aBtn" type="submit">သိမ်းမည်</button></form>`;
+  } else {
+    h = head("🙏 အကောင့်ဝင်ရန်") + `<form id="acForm">
+      <label>Email</label><input type="email" id="aEmail" autocomplete="email" required placeholder="example@gmail.com">
+      <label>Password</label><input type="password" id="aPw" autocomplete="current-password" required>
+      <div class="amsg" id="amsg"></div><button class="abtn" id="aBtn" type="submit">ဝင်မည်</button></form>
+      <div class="alinks"><button data-go="register" type="button">အကောင့်အသစ် ဖောက်မည်</button><button data-go="forgot" type="button">Password မေ့နေလား?</button></div>`;
+  }
+  $("acBox").innerHTML = h;
+  $("acX").onclick = closeAuth;
+  document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { authMode = b.dataset.go; renderAuth(); });
+  if ($("acOut")) $("acOut").onclick = async () => { await db.auth.signOut(); closeAuth(); toast("ထွက်ပြီးပါပြီ"); };
+  if ($("acForm")) $("acForm").onsubmit = e => { e.preventDefault(); submitAuth(); };
+}
+async function submitAuth() {
+  const em = $("aEmail") ? $("aEmail").value.trim() : "", pw = $("aPw") ? $("aPw").value : "", pw2 = $("aPw2") ? $("aPw2").value : "";
+  const msg = (t, ok) => { $("amsg").textContent = t; $("amsg").classList.toggle("ok", !!ok); };
+  const btn = $("aBtn"); btn.disabled = true; msg("");
+  try {
+    if (authMode === "login") {
+      const { error } = await db.auth.signInWithPassword({ email: em, password: pw });
+      if (error) return msg(authMsg(error));
+      closeAuth(); toast("ဝင်ပြီးပါပြီ 🙏");
+    } else if (authMode === "register") {
+      if (pw.length < 6) return msg("Password အနည်းဆုံး 6 လုံး ရှိရမယ်");
+      if (pw !== pw2) return msg("Password နှစ်ခု မတူပါ");
+      const { data, error } = await db.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: homeUrl() } });
+      if (error) return msg(authMsg(error));
+      if (data.user && data.user.identities && data.user.identities.length === 0) return msg("ဒီ Email နဲ့ အကောင့်ရှိပြီးသားပါ");
+      if (data.session) { closeAuth(); toast("အကောင့်ဖောက်ပြီးပါပြီ 🙏"); }
+      else msg("✅ " + em + " သို့ အတည်ပြုရန် Email ပို့လိုက်ပါပြီ။ Inbox/Spam ထဲက Link ကို နှိပ်ပါ။", true);
+    } else if (authMode === "forgot") {
+      const { error } = await db.auth.resetPasswordForEmail(em, { redirectTo: homeUrl() });
+      if (error) return msg(authMsg(error));
+      msg("✅ Password ပြောင်းရန် Link ကို Email သို့ ပို့လိုက်ပါပြီ။", true);
+    } else if (authMode === "reset") {
+      if (pw.length < 6) return msg("Password အနည်းဆုံး 6 လုံး ရှိရမယ်");
+      const { error } = await db.auth.updateUser({ password: pw });
+      if (error) return msg(authMsg(error));
+      closeAuth(); toast("Password ပြောင်းပြီးပါပြီ ✔");
+    }
+  } finally { btn.disabled = false; }
+}
+$("acctBtn").onclick = () => openAuth();
+$("ac").onclick = e => { if (e.target.id === "ac") closeAuth(); };
+async function initAuth() {
+  try {
+    const { data } = await db.auth.getSession();
+    user = (data.session && data.session.user) || null; updateAcct(); onUser();
+    db.auth.onAuthStateChange((ev, session) => {
+      user = (session && session.user) || null; updateAcct(); setTimeout(onUser, 0);
+      if (ev === "PASSWORD_RECOVERY") { authMode = "reset"; renderAuth(); $("ac").classList.add("show"); }
+    });
+  } catch (e) {}
+}
+
+/* ---------- Share (User အချင်းချင်း) + 🔔 ---------- */
+let shares = [], shareCh = null, shareFor = null;
+const myEmail = () => ((user && user.email) || "").toLowerCase();
+const sermonById = id => sermons.find(s => s.id === id);
+function ago(t) {
+  const m = Math.floor((Date.now() - new Date(t)) / 60000);
+  if (m < 1) return "ခုနကပဲ";
+  if (m < 60) return m + " မိနစ်ခန့်က";
+  const h = Math.floor(m / 60);
+  return h < 24 ? h + " နာရီခန့်က" : Math.floor(h / 24) + " ရက်ခန့်က";
+}
+function unseenCount() { return shares.filter(r => !r.seen && sermonById(r.sermon_id)).length; }
+function updateBell() {
+  $("bell").hidden = !user;
+  const n = unseenCount();
+  $("bell").classList.toggle("lit", n > 0);
+  $("bdg").textContent = n > 99 ? "99+" : n;
+}
+async function loadShares() {
+  if (!user) { shares = []; updateBell(); return; }
+  const { data, error } = await db.from("shares").select("*").eq("to_email", myEmail()).order("created_at", { ascending: false }).limit(100);
+  if (!error) shares = data || [];
+  updateBell();
+  if ($("ib").classList.contains("show")) renderInbox();
+}
+function subscribeShares() {
+  if (!user) { if (shareCh) { db.removeChannel(shareCh); shareCh = null; shareFor = null; } return; }
+  if (shareFor === user.id) return;
+  if (shareCh) db.removeChannel(shareCh);
+  shareFor = user.id;
+  shareCh = db.channel("shares-" + user.id)
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "shares" }, p => {
+      const r = p.new;
+      if (!r || (r.to_email || "").toLowerCase() !== myEmail()) return;
+      loadShares().then(() => {
+        const sm = sermonById(r.sermon_id);
+        toast("🔔 " + r.from_email + " က " + (sm ? "“" + sm.title + "” " : "တရား ") + "ပို့လိုက်ပါတယ်");
+        if (navigator.vibrate) navigator.vibrate(200);
+      });
+    }).subscribe();
+}
+function onUser() {
+  updateBell();
+  if (user) { loadShares(); subscribeShares(); }
+  else { shares = []; subscribeShares(); updateBell(); }
+}
+setInterval(() => { if (user && !document.hidden) loadShares(); }, 45000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden && user) loadShares(); });
+
+/* Inbox */
+function renderInbox() {
+  const rows = shares.filter(r => sermonById(r.sermon_id));
+  $("ibList").innerHTML = rows.length ? rows.map(r => {
+    const sm = sermonById(r.sermon_id);
+    return `<div class="ibi ${r.seen ? "" : "new"}">
+      <div class="ibm"><div class="ibf">${r.seen ? "" : '<span class="nw">● NEW </span>'}📩 ${esc(r.from_email)}</div>
+      <div class="ibt">${esc(sm.title)}</div><div class="ibd">${ago(r.created_at)}</div></div>
+      <button class="ibp" data-id="${r.id}" aria-label="ဖွင့်မည်"><svg class="ic"><use href="#i-play"/></svg></button></div>`;
+  }).join("") : `<div class="empty">ပို့ထားတဲ့ တရား မရှိသေးပါ</div>`;
+  document.querySelectorAll(".ibp").forEach(b => b.onclick = () => playShare(+b.dataset.id));
+}
+async function markSeen(id) {
+  const r = shares.find(x => x.id === id);
+  if (r && !r.seen) { r.seen = true; updateBell(); await db.from("shares").update({ seen: true }).eq("id", id); }
+}
+function playShare(id) {
+  const rows = shares.filter(r => sermonById(r.sermon_id));
+  const i = rows.findIndex(r => r.id === id);
+  if (i < 0) return;
+  queue = rows.map(r => sermonById(r.sermon_id)); qi = i;
+  $("ib").classList.remove("show");
+  start(true);
+  markSeen(id);
+}
+$("bell").onclick = () => { renderInbox(); $("ib").classList.add("show"); loadShares(); };
+$("ibClose").onclick = () => $("ib").classList.remove("show");
+$("ib").onclick = e => { if (e.target.id === "ib") $("ib").classList.remove("show"); };
+$("ibAll").onclick = async () => {
+  if (!user) return;
+  shares.forEach(r => r.seen = true); updateBell(); renderInbox();
+  await db.from("shares").update({ seen: true }).eq("to_email", myEmail()).eq("seen", false);
+};
+
+/* Share modal */
+function closeShare() { $("sh").classList.remove("show"); }
+function openShare(s) {
+  if (!s) return;
+  if (!user) { toast("Share လုပ်ဖို့ အကောင့်အရင်ဝင်ပါ"); openAuth("login"); return; }
+  $("shBox").innerHTML = `<div class="ach"><span>↗ တရား Share မည်</span><button class="round" id="shX" type="button" style="width:38px;height:38px" aria-label="ပိတ်"><svg class="ic"><use href="#i-close"/></svg></button></div>
+    <div class="shtitle">${esc(s.title)}</div>
+    <form id="shForm"><label>လက်ခံမည့်သူ၏ Email</label>
+    <input type="email" id="shEm" required autocomplete="off" placeholder="friend@gmail.com">
+    <div class="amsg" id="shMsg"></div><button class="abtn" id="shBtn" type="submit">ပို့မည်</button></form>`;
+  $("sh").classList.add("show");
+  $("shX").onclick = closeShare;
+  $("shForm").onsubmit = async e => {
+    e.preventDefault();
+    const msg = (t, ok) => { $("shMsg").textContent = t; $("shMsg").classList.toggle("ok", !!ok); };
+    const em = $("shEm").value.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return msg("Email ပုံစံ မမှန်ပါ");
+    if (em === myEmail()) return msg("ကိုယ့်ကိုကိုယ် ပို့လို့မရပါ");
+    $("shBtn").disabled = true; msg("");
+    const { error } = await db.from("shares").insert({ sermon_id: s.id, from_email: myEmail(), to_email: em });
+    $("shBtn").disabled = false;
+    if (error) {
+      const m = (error.message || "").toLowerCase();
+      if (error.code === "23505") return msg("ဒီတရားကို ဒီ Email ဆီ ပို့ပြီးသားပါ");
+      if (error.code === "42P01" || error.code === "PGRST205" || m.includes("schema cache")) return msg("shares table မရှိသေးပါ — supabase-share.sql ကို Run ပါ");
+      if (m.includes("row-level")) return msg("အကောင့်ပြန်ဝင်ပြီး ပြန်စမ်းပါ");
+      return msg(error.message);
+    }
+    closeShare(); toast("ပို့လိုက်ပါပြီ 🙏");
+  };
+}
+$("sh").onclick = e => { if (e.target.id === "sh") closeShare(); };
+$("fpShare").onclick = () => openShare(nowPlaying);
+
+/* ---------- Meeting (အစည်းအဝေး) ---------- */
+// TURN (Metered) — ဖုန်း 4G အချင်းချင်း ချိတ်ဆက်နိုင်ဖို့
+const DEFAULT_TURN = "https://thuetaa.metered.live/api/v1/turn/credentials?apiKey=95dbcba6810e9e4a473cbef71b1fcdbe35ae";
+const TURN_SERVERS = [];
+const BASE_ICE = [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }, ...TURN_SERVERS];
+let iceCache = null;
+async function getIce() {
+  if (iceCache) return iceCache;
+  let extra = [];
+  try {
+    const c = new AbortController(), t = setTimeout(() => c.abort(), 5000);
+    const r = await fetch(DEFAULT_TURN, { signal: c.signal }); clearTimeout(t);
+    const j = await r.json(); extra = Array.isArray(j) ? j : (j.iceServers || []);
+  } catch (e) {}
+  const cfg = { iceServers: [...BASE_ICE, ...extra] };
+  if (extra.length) iceCache = cfg;
+  return cfg;
+}
+const MEET_MAX = 6;                                       // တစ်ပြိုင်နက် လူ ၆ ဦးအထိ
+const MEET_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+let mt = null, skipPop = false;
+const rid = () => Math.random().toString(36).slice(2, 10);
+function newCode() { const a = new Uint32Array(6); crypto.getRandomValues(a); return [...a].map(n => MEET_CHARS[n % MEET_CHARS.length]).join(""); }
+function parseCode(v) {
+  v = String(v || "").trim(); const m = v.match(/meet=([A-Za-z0-9]+)/i);
+  const c = (m ? m[1] : v).toUpperCase().replace(/[^A-Z0-9]/g, "");
+  return c.length === 6 ? c : "";
+}
+const meetLink = code => location.href.split("#")[0] + "#meet=" + code;
+const myMeetName = () => { let n = ""; try { n = localStorage.getItem("meetName") || ""; } catch (e) {} return n || ((user && user.email) ? user.email.split("@")[0] : ""); };
+
+function openMeetDialog(prefCode) {
+  if (mt) { $("meet").hidden = false; return; }
+  $("mtBox").innerHTML = `<div class="ach"><span>👥 Meeting</span><button class="round" id="mtX" type="button" style="width:38px;height:38px" aria-label="ပိတ်"><svg class="ic"><use href="#i-close"/></svg></button></div>
+    <label>သင့်အမည်</label><input type="text" id="mtName" maxlength="30" autocomplete="off" placeholder="အမည် ရိုက်ပါ" value="${esc(myMeetName())}">
+    <div class="mtopt"><label><input type="checkbox" id="mtCam" checked>📷 Camera ဖွင့်မည်</label><label><input type="checkbox" id="mtMic" checked>🎤 Mic ဖွင့်မည်</label></div>
+    <button class="abtn" id="mtNew" type="button">➕ Meeting အသစ် ဖွင့်မည်</button>
+    <div class="ordiv">— သို့မဟုတ် —</div>
+    <label>Meeting Code (သို့) Link</label>
+    <input type="text" id="mtCode" autocomplete="off" autocapitalize="characters" placeholder="ဥပမာ - K7M2QX" value="${esc(prefCode || "")}">
+    <button class="abtn" id="mtJoin" type="button">ဝင်မည်</button>
+    <div class="amsg" id="mtMsg"></div>`;
+  $("mt").classList.add("show");
+  $("mtX").onclick = () => $("mt").classList.remove("show");
+  const go = code => startMeeting(code, $("mtName").value.trim(), $("mtCam").checked, $("mtMic").checked);
+  $("mtNew").onclick = () => go(newCode());
+  $("mtJoin").onclick = () => { const c = parseCode($("mtCode").value); if (!c) return ($("mtMsg").textContent = "Meeting Code (၆ လုံး) ကို မှန်ကန်စွာ ထည့်ပါ"); go(c); };
+}
+$("mt").onclick = e => { if (e.target.id === "mt") $("mt").classList.remove("show"); };
+$("meetCard").onclick = () => openMeetDialog();
+
+/* Tile */
+function layoutGrid() {
+  const g = $("mGrid"), n = g.children.length, wide = innerWidth > innerHeight * 1.1;
+  const c = n <= 1 ? 1 : n === 2 ? (wide ? 2 : 1) : n <= 4 ? 2 : (wide ? 3 : 2);
+  g.style.gridTemplateColumns = `repeat(${c},1fr)`; g.style.gridTemplateRows = `repeat(${Math.max(1, Math.ceil(n / c))},1fr)`;
+  $("mCnt").textContent = "👥 " + n + " ဦး";
+}
+window.addEventListener("resize", () => { if (mt) layoutGrid(); });
+function addTile(id, name, local) {
+  const d = document.createElement("div");
+  d.className = "tile" + (local ? " local" : " wait"); d.dataset.id = id;
+  d.innerHTML = `<video autoplay playsinline></video><div class="av"></div><div class="mk">🔇</div><div class="nm"></div><div class="st">ချိတ်ဆက်နေပါတယ်…</div>`;
+  const v = d.querySelector("video"); if (local) v.muted = true;
+  $("mGrid").appendChild(d); setTileName(d, name); layoutGrid();
+  return d;
+}
+function setTileName(d, name) { d.querySelector(".nm").textContent = name || "…"; d.querySelector(".av").textContent = (Array.from(name || "?")[0] || "?").toUpperCase(); }
+function tileFlags(d, mic, cam) { d.classList.toggle("nomic", mic === false); d.classList.toggle("nocam", cam === false); }
+function tapPlayBanner() {
+  const b = $("mMsg"); if (!b || b.firstChild) return;
+  b.innerHTML = `<button class="tapbtn" type="button">🔊 နှိပ်၍ အသံ/ပုံ ဖွင့်ပါ</button>`;
+  b.firstChild.onclick = () => { document.querySelectorAll("#mGrid video").forEach(v => v.play().catch(() => {})); b.innerHTML = ""; };
+}
+const msend = (event, payload) => { if (mt && mt.ch) mt.ch.send({ type: "broadcast", event, payload: { from: mt.id, ...payload } }); };
+function tune(pc) {
+  pc.getSenders().forEach(s => {
+    if (!s.track) return;
+    try {
+      const p = s.getParameters(); if (!p.encodings || !p.encodings.length) p.encodings = [{}];
+      p.encodings[0].maxBitrate = s.track.kind === "video" ? 350000 : 32000;
+      s.setParameters(p).catch(() => {});
+    } catch (e) {}
+  });
+}
+
+/* ချိတ်ဆက်မှု */
+function ensurePeer(id, name, mic, cam) {
+  let p = mt.peers.get(id);
+  if (!p) {
+    p = { id, name: name || "", mic: mic !== false, cam: cam !== false, pc: null, pend: [], ready: false, connected: false, retry: 0, timer: null, ms: null };
+    p.tile = addTile(id, p.name, false); mt.peers.set(id, p);
+  } else if (name) { p.name = name; setTileName(p.tile, name); }
+  if (mic !== undefined) p.mic = mic !== false;
+  if (cam !== undefined) p.cam = cam !== false;
+  tileFlags(p.tile, p.mic, p.cam);
+  return p;
+}
+function dropPeer(id) {
+  const p = mt && mt.peers.get(id); if (!p) return;
+  clearTimeout(p.timer);
+  if (p.pc) { try { p.pc.close(); } catch (e) {} }
+  p.tile.remove(); mt.peers.delete(id); layoutGrid();
+}
+function peerFailed(id) {
+  const p = mt && mt.peers.get(id); if (!p) return;
+  if (p.retry < 2) { p.retry++; const nm = p.name, r = p.retry; dropPeer(id); const q = ensurePeer(id, nm); q.retry = r; msend("hello", { to: id, name: mt.name, mic: mt.mic, cam: mt.cam }); }
+  else { p.tile.classList.add("wait"); p.tile.querySelector(".st").textContent = "⚠ ချိတ်ဆက်မရပါ"; }
+}
+function makePc(p) {
+  if (p.pc) { try { p.pc.close(); } catch (e) {} }
+  const pc = new RTCPeerConnection(mt.ice); p.pc = pc; p.ready = false; p.connected = false; p.ms = null;
+  pc.onicecandidate = e => { if (e.candidate) msend("ice", { to: p.id, cand: e.candidate.toJSON() }); };
+  pc.ontrack = e => {
+    const v = p.tile.querySelector("video");
+    const s = e.streams[0] || (p.ms || (p.ms = new MediaStream()));
+    if (!e.streams[0]) p.ms.addTrack(e.track);
+    if (v.srcObject !== s) v.srcObject = s;
+    v.play().catch(tapPlayBanner);
+  };
+  pc.onconnectionstatechange = () => {
+    if (p.pc !== pc || !mt) return;
+    if (pc.connectionState === "connected") { p.connected = true; p.retry = 0; clearTimeout(p.timer); p.tile.classList.remove("wait"); }
+    else if (pc.connectionState === "failed") peerFailed(p.id);
+    else if (pc.connectionState === "disconnected") setTimeout(() => { if (mt && p.pc === pc && pc.connectionState === "disconnected") peerFailed(p.id); }, 8000);
+  };
+  clearTimeout(p.timer);
+  p.timer = setTimeout(() => { if (mt && p.pc === pc && !p.connected) peerFailed(p.id); }, 20000);
+  return pc;
+}
+function addLocal(pc) {
+  const st = mt.stream;
+  if (st) st.getTracks().forEach(t => pc.addTrack(t, st));
+  if (!st || !st.getVideoTracks().length) pc.addTransceiver("video", { direction: "recvonly" });
+}
+async function callPeer(p) {
+  const pc = makePc(p); p.pend = [];
+  addLocal(pc);
+  try {
+    const o = await pc.createOffer(); await pc.setLocalDescription(o); tune(pc);
+    msend("offer", { to: p.id, sdp: { type: pc.localDescription.type, sdp: pc.localDescription.sdp } });
+  } catch (e) { peerFailed(p.id); }
+}
+function onHello(pl, isHello) {
+  if (!mt || !pl || pl.from === mt.id || (pl.to && pl.to !== mt.id)) return;
+  const x = pl.from;
+  if (isHello) {
+    if (mt.peers.size >= MEET_MAX - 1 && !mt.peers.has(x)) return msend("full", { to: x });
+    const old = mt.peers.get(x), r = old ? old.retry : 0; dropPeer(x);
+    const p = ensurePeer(x, pl.name, pl.mic, pl.cam); p.retry = r;
+    msend("here", { to: x, name: mt.name, mic: mt.mic, cam: mt.cam });
+    if (mt.id < x) callPeer(p);
+  } else {
+    if (mt.peers.has(x)) { ensurePeer(x, pl.name, pl.mic, pl.cam); return; }
+    const p = ensurePeer(x, pl.name, pl.mic, pl.cam);
+    if (mt.id < x) callPeer(p);
+  }
+}
+async function onOffer(pl) {
+  if (!mt || !pl || pl.to !== mt.id) return;
+  const p = mt.peers.get(pl.from) || ensurePeer(pl.from, "", true, true);
+  const pc = makePc(p); addLocal(pc);
+  try {
+    await pc.setRemoteDescription(pl.sdp); p.ready = true;
+    for (const c of p.pend) { try { await pc.addIceCandidate(c); } catch (e) {} } p.pend = [];
+    const a = await pc.createAnswer(); await pc.setLocalDescription(a); tune(pc);
+    msend("answer", { to: p.id, sdp: { type: pc.localDescription.type, sdp: pc.localDescription.sdp } });
+  } catch (e) { peerFailed(p.id); }
+}
+async function onAnswer(pl) {
+  const p = mt && pl && pl.to === mt.id && mt.peers.get(pl.from); if (!p || !p.pc) return;
+  try {
+    await p.pc.setRemoteDescription(pl.sdp); p.ready = true;
+    for (const c of p.pend) { try { await p.pc.addIceCandidate(c); } catch (e) {} } p.pend = [];
+  } catch (e) { peerFailed(p.id); }
+}
+function onIce(pl) {
+  if (!mt || !pl || pl.to !== mt.id) return;
+  const p = mt.peers.get(pl.from) || ensurePeer(pl.from, "", true, true);
+  if (p.pc && p.ready) p.pc.addIceCandidate(pl.cand).catch(() => {}); else p.pend.push(pl.cand);
+}
+function onState(pl) {
+  if (!mt || !pl || (pl.to && pl.to !== mt.id)) return;
+  const p = mt.peers.get(pl.from); if (p) { p.mic = pl.mic !== false; p.cam = pl.cam !== false; tileFlags(p.tile, p.mic, p.cam); }
+}
+
+/* စတင်ခြင်း / ထွက်ခြင်း */
+async function startMeeting(code, name, wantCam, wantMic) {
+  const msg = t => { const e = $("mtMsg"); if (e) e.textContent = t; };
+  if (mt) return;
+  if (!window.RTCPeerConnection || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return msg("Meeting သုံးဖို့ Website ကို https:// နဲ့ ဖွင့်ပြီး Chrome သုံးပါ");
+  if (!name) return msg("အမည် ရိုက်ထည့်ပါ");
+  try { localStorage.setItem("meetName", name); } catch (e) {}
+  ["mtNew", "mtJoin"].forEach(i => { if ($(i)) $(i).disabled = true; });
+  msg("Camera/Mic ဖွင့်နေပါတယ်…");
+  const aC = { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
+  let stream = null;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: aC, video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 360 }, frameRate: { ideal: 24, max: 30 } } }); }
+  catch (e) { try { stream = await navigator.mediaDevices.getUserMedia({ audio: aC }); } catch (e2) { ["mtNew", "mtJoin"].forEach(i => { if ($(i)) $(i).disabled = false; }); return msg("Mic/Camera ခွင့်ပြုချက် လိုပါတယ် (Browser Setting မှာ Allow လုပ်ပါ)"); } }
+  const ice = await getIce();
+  const aT = stream.getAudioTracks()[0], vT = stream.getVideoTracks()[0];
+  if (aT) aT.enabled = wantMic; if (vT) vT.enabled = wantCam;
+  mt = { code, name, id: rid(), stream, ice, ch: null, peers: new Map(), mic: wantMic, cam: !!vT && wantCam, hasCam: !!vT, facing: "user", wake: null };
+  if (!audio.paused) audio.pause();                         // တရား MP3 ရပ်ထား
+  $("mt").classList.remove("show");
+  $("meet").hidden = false; document.body.style.overflow = "hidden";
+  $("mGrid").innerHTML = ""; $("mMsg").innerHTML = "";
+  $("mCode").textContent = "Code: " + code;
+  const me = addTile("me", name + " (ကျွန်ုပ်)", true);
+  me.querySelector("video").srcObject = stream; me.querySelector("video").play().catch(() => {});
+  tileFlags(me, mt.mic, mt.cam); mt.me = me;
+  refreshMeetBtns();
+  history.pushState({ meet: 1 }, "");
+  if (/meet=/i.test(location.hash)) history.replaceState({ meet: 1 }, "", location.pathname + location.search);
+  try { if (navigator.wakeLock) mt.wake = await navigator.wakeLock.request("screen"); } catch (e) {}
+  const ch = db.channel("meet-" + code, { config: { broadcast: { self: false } } });
+  mt.ch = ch;
+  ch.on("broadcast", { event: "hello" }, ({ payload }) => onHello(payload, true))
+    .on("broadcast", { event: "here" }, ({ payload }) => onHello(payload, false))
+    .on("broadcast", { event: "offer" }, ({ payload }) => onOffer(payload))
+    .on("broadcast", { event: "answer" }, ({ payload }) => onAnswer(payload))
+    .on("broadcast", { event: "ice" }, ({ payload }) => onIce(payload))
+    .on("broadcast", { event: "state" }, ({ payload }) => onState(payload))
+    .on("broadcast", { event: "bye" }, ({ payload }) => { if (mt && payload) dropPeer(payload.from); })
+    .on("broadcast", { event: "full" }, ({ payload }) => { if (mt && payload && payload.to === mt.id) leaveMeeting("Meeting လူပြည့်နေပါပြီ (" + MEET_MAX + " ဦးအထိ)"); })
+    .subscribe(st => {
+      if (!mt || mt.ch !== ch) return;
+      if (st === "SUBSCRIBED") msend("hello", { name: mt.name, mic: mt.mic, cam: mt.cam });
+      else if (st === "CHANNEL_ERROR" || st === "TIMED_OUT") leaveMeeting("⚠ ချိတ်ဆက်မရပါ — Internet ကို စစ်ပါ");
+    });
+}
+function leaveMeeting(text) {
+  if (!mt) return;
+  const m = mt;
+  try { m.ch.send({ type: "broadcast", event: "bye", payload: { from: m.id } }); } catch (e) {}
+  m.peers.forEach(p => { clearTimeout(p.timer); try { p.pc && p.pc.close(); } catch (e) {} });
+  if (m.stream) m.stream.getTracks().forEach(t => t.stop());
+  if (m.wake) { try { m.wake.release(); } catch (e) {} }
+  setTimeout(() => { try { db.removeChannel(m.ch); } catch (e) {} }, 400);
+  mt = null;
+  $("mGrid").innerHTML = ""; $("mMsg").innerHTML = ""; $("meet").hidden = true; document.body.style.overflow = "";
+  if (history.state && history.state.meet) { skipPop = true; history.back(); }
+  if (text) toast(text);
+}
+window.addEventListener("popstate", () => {
+  if (skipPop) { skipPop = false; return; }
+  if (mt) { if (confirm("Meeting ကနေ ထွက်မလား?")) leaveMeeting(); else history.pushState({ meet: 1 }, ""); }
+});
+document.addEventListener("visibilitychange", async () => {
+  if (mt && !document.hidden) { try { if (navigator.wakeLock) mt.wake = await navigator.wakeLock.request("screen"); } catch (e) {} }
+});
+
+/* ခလုတ်များ */
+function refreshMeetBtns() {
+  if (!mt) return;
+  $("mMic").classList.toggle("off", !mt.mic); $("mMic").querySelector("use").setAttribute("href", mt.mic ? "#i-mic" : "#i-micoff");
+  $("mCam").classList.toggle("off", !mt.cam); $("mCam").querySelector("use").setAttribute("href", mt.cam ? "#i-cam" : "#i-camoff");
+  $("mCam").disabled = !mt.hasCam; $("mFlip").disabled = !mt.hasCam;
+  tileFlags(mt.me, mt.mic, mt.cam);
+}
+function announceState() { msend("state", { mic: mt.mic, cam: mt.cam }); }
+$("mMic").onclick = () => { if (!mt) return; const t = mt.stream.getAudioTracks()[0]; if (!t) return; t.enabled = !t.enabled; mt.mic = t.enabled; refreshMeetBtns(); announceState(); };
+$("mCam").onclick = () => { if (!mt || !mt.hasCam) return; const t = mt.stream.getVideoTracks()[0]; t.enabled = !t.enabled; mt.cam = t.enabled; refreshMeetBtns(); announceState(); };
+$("mFlip").onclick = async () => {
+  if (!mt || !mt.hasCam) return;
+  const old = mt.stream.getVideoTracks()[0], next = mt.facing === "user" ? "environment" : "user", wasOn = old.enabled;
+  const swap = nt => {
+    mt.peers.forEach(p => { if (!p.pc) return; const s = p.pc.getSenders().find(x => (x.track && x.track.kind === "video") || (!x.track && x.dtmf === undefined)); if (s) s.replaceTrack(nt).catch(() => {}); });
+    mt.stream.getVideoTracks().forEach(t => mt.stream.removeTrack(t)); mt.stream.addTrack(nt); nt.enabled = wasOn;
+    mt.me.querySelector("video").srcObject = mt.stream;
+  };
+  try {
+    old.stop();
+    const ns = await navigator.mediaDevices.getUserMedia({ video: { facingMode: next, width: { ideal: 640 }, height: { ideal: 360 } }, audio: false });
+    swap(ns.getVideoTracks()[0]); mt.facing = next; mt.me.classList.toggle("rear", next === "environment");
+  } catch (e) {
+    toast("Camera ပြောင်းမရပါ");
+    try { const rs = await navigator.mediaDevices.getUserMedia({ video: { facingMode: mt.facing }, audio: false }); swap(rs.getVideoTracks()[0]); } catch (e2) {}
+  }
+};
+$("mEnd").onclick = () => { if (confirm("Meeting ကနေ ထွက်မလား?")) leaveMeeting(); };
+$("mCopy").onclick = async () => {
+  if (!mt) return; const url = meetLink(mt.code);
+  try { await navigator.clipboard.writeText(url); toast("Link ကူးပြီးပါပြီ ✔"); } catch (e) { prompt("ဒီ Link ကို ကူးပါ", url); }
+};
+$("mShare").onclick = () => {
+  if (!mt) return; const url = meetLink(mt.code);
+  if (navigator.share) navigator.share({ title: "Meeting ဝင်ရန်", text: "Meeting Code: " + mt.code, url }).catch(() => {});
+  else $("mCopy").onclick();
+};
+// Link ကနေ ဝင်လာရင် (…#meet=CODE) ဝင်ရန် dialog ကို အလိုလို ဖွင့်
+(() => { const c = parseCode((location.hash.match(/meet=([A-Za-z0-9]+)/i) || [])[0] || ""); if (c) setTimeout(() => openMeetDialog(c), 600); })();
+
+/* ---------- Image Slider ---------- */
+let slideCount = 0, slideCur = 0, slidePause = false;
+async function loadSlides() {
+  const { data, error } = await db.from("slides").select("*").order("sort_order").order("created_at").limit(5);
+  if (error || !data || !data.length) return;
+  slideCount = data.length;
+  $("track").innerHTML = data.map(s => `<div class="slide"><img src="${esc(s.image_url)}" alt="" loading="lazy" onerror="this.style.display='none'"></div>`).join("");
+  $("dots").innerHTML = data.map((_, i) => `<span class="dot ${i === 0 ? "on" : ""}"></span>`).join("");
+  $("dots").style.display = slideCount > 1 ? "flex" : "none";
+  $("slider").hidden = false;
+  const track = $("track");
+  track.addEventListener("scroll", () => {
+    slideCur = Math.round(track.scrollLeft / track.clientWidth);
+    document.querySelectorAll(".dot").forEach((d, i) => d.classList.toggle("on", i === slideCur));
+  }, { passive: true });
+  const hold = () => { slidePause = true; clearTimeout(hold.t); hold.t = setTimeout(() => slidePause = false, 6000); };
+  track.addEventListener("touchstart", hold, { passive: true });
+  track.addEventListener("pointerdown", hold);
+  if (slideCount > 1) setInterval(() => {
+    if (slidePause || document.hidden || $("homeView").hidden) return;
+    track.scrollTo({ left: ((slideCur + 1) % slideCount) * track.clientWidth, behavior: "smooth" });
+  }, 4000);
+}
+
+load();
+loadSlides();
+initAuth();
+</script>
+</body>
+</html>
